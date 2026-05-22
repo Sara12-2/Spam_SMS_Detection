@@ -37,17 +37,17 @@ spam_detection/
 
 ## 📊 Dataset
 
-- **Source:** [SMS Spam Collection Dataset - Kaggle](https://www.kaggle.com/datasets/uciml/sms-spam-collection-dataset)
+- **Source:** SMS Spam Collection Dataset
 - **Size:** 5,572 SMS messages
 - **Classes:** Ham (Legitimate) and Spam
-- **Format:** CSV with label and message columns
+- **Distribution:** ~87% Ham, ~13% Spam (imbalanced)
 
 ---
 
 ## 🛠️ Technologies Used
 
 | Library | Purpose |
-|--------|---------|
+|---------|---------|
 | `pandas` | Data loading and manipulation |
 | `numpy` | Numerical operations |
 | `nltk` | Text preprocessing (stopwords, stemming) |
@@ -74,7 +74,7 @@ Text Preprocessing (lowercase, remove special chars, stemming)
     ↓
 TF-IDF Vectorization (5000 features, bigrams)
     ↓
-Train/Test Split (80% / 20%)
+Train/Test Split (80% / 20%, Stratified)
     ↓
 Model Training (Naive Bayes + Logistic Regression)
     ↓
@@ -109,10 +109,12 @@ Evaluation (Accuracy, Precision, Recall, F1, ROC-AUC)
 
 ## 📈 Results
 
-| Model | Accuracy | ROC-AUC |
-|-------|----------|---------|
-| Naive Bayes | ~97% | ~0.97 |
-| Logistic Regression | ~98% | ~0.99 |
+| Model | Accuracy | ROC-AUC | Spam Recall |
+|-------|----------|---------|-------------|
+| Naive Bayes | 96.77% | 0.8820 | 0.77 |
+| Logistic Regression | 96.95% | 0.8916 | 0.78 |
+
+> **Key Finding:** Both models achieve ~97% accuracy but struggle with spam recall (~77–78%), meaning they miss about 22–23% of actual spam messages.
 
 ---
 
@@ -120,19 +122,30 @@ Evaluation (Accuracy, Precision, Recall, F1, ROC-AUC)
 
 ```python
 predict_message("Congratulations! You've won a FREE iPhone. Click here now!")
-# → 🚨 SPAM
+# → ❌ Both models misclassify as HAM (needs improvement)
+
+predict_message("URGENT: Your account has been compromised. Verify now!")
+# → Naive Bayes: 🚨 SPAM | Logistic Regression: ✅ HAM
 
 predict_message("Hey, are we still meeting tomorrow at 5pm?")
-# → ✅ HAM (Legitimate)
+# → ✅ Both models correctly classify as HAM
 ```
 
 ---
 
 ## 📉 Visualizations
 
-- **Spam vs Ham Distribution** — Bar chart showing class balance
-- **Message Length Distribution** — Histogram comparing lengths
-- **Confusion Matrix** — Heatmap for both models
+- **Spam vs Ham Distribution** — Bar chart showing class imbalance
+- **Message Length Distribution** — Histogram comparing spam vs ham lengths
+- **Confusion Matrix** — Heatmaps for both models
 
 ---
 
+## 💡 Limitations & Future Work
+
+Current models miss obvious spam like prize-winning messages. Can be improved with:
+
+- More training data
+- Advanced preprocessing
+- Deep learning models (LSTM, BERT)
+- Ensemble methods
